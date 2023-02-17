@@ -1,1 +1,2 @@
-web: python ailauncher.py
+web: python src/app.py -p $PORT
+
