@@ -126,6 +126,6 @@ if __name__ == "__main__":
         clear_stdout()
 
     main(model_name=args.model_name,
-         server_port=args.port,
+         port=args.port,
          koboldai_url=args.koboldai_url,
          share_gradio_link=args.share)
