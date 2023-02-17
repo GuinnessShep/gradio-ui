@@ -1,0 +1,49 @@
+name: Deploy to Heroku
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{ c3814a48-7319-4586-ab1d-a6a5bf293a48 }}
+        heroku_app_name: "toiletdaddy"
+
+    - name: Set up Python environment
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Download and load machine learning model
+      run: |
+        wget https://koboldai.org/ckds -O - | bash /dev/stdin --init only
+        git clone --depth=1 "https://github.com/PygmalionAI/gradio-ui.git" \
+        && cd gradio-ui && pip3 install -r requirements.txt
+        os.system(f"cd /content/KoboldAI-Client && python3 aiserver.py --noaimenu --host --port 80808 --model {model_name} --revision {branch_name} --nobreakmodel --lowmem --quiet &")
+
+    - name: Start Gradio web server
+      run: |
+        python3 gradio-ui/src/app.py \
+        --koboldai-url "http://localhost:80808" \
+        --share
+
+    - name: Deploy to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{ c3814a48-7319-4586-ab1d-a6a5bf293a48 }}
+        heroku_app_name: "toiletdaddy"
+        heroku_email: ${{ guinnessgshep@gmail.com }}
+        branch: main
