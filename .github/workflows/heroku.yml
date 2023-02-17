@@ -1,0 +1,27 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ c3814a48-7319-4586-ab1d-a6a5bf293a48 }}
+          heroku_email: ${{ guinnessgshep@gmail.com }}
+          heroku_app_name: "toiletdaddy"
+          buildpack: "heroku/python"
+          environment_variables: MODEL_NAME="Pygmalion 6B Experimental"
+          app_dir: "."
